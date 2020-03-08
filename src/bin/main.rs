@@ -16,6 +16,11 @@ use panic_halt as _;
 use cortex_m_rt::entry;
 use cortex_m_semihosting::hprintln;
 
+static PERIPH_BASE: u32 = 0x40000000u32;
+static AHBPERIPH_BASE: u32 = PERIPH_BASE + 0x00020000u32;
+static RCC_BASE: u32 = AHBPERIPH_BASE + 0x00001000u32;
+static mut RCC_APB2ENR: u32 = RCC_BASE + 0x18u32;
+
 #[entry]
 fn main() -> ! {
     // Get access to the core peripherals from the cortex-m crate
@@ -23,10 +28,9 @@ fn main() -> ! {
     hprintln!("Hello, world!").unwrap();
 
     // Enable clock for GPIOC.
-    let rcc_apb2enr = &mut (0x18) as *mut i32;
     unsafe {
-        let cur_val = core::ptr::read_volatile(rcc_apb2enr);
-        core::ptr::write_volatile(rcc_apb2enr, cur_val | 0x10);
+        let rcc_apb2enr = &mut (RCC_APB2ENR) as *mut u32;
+        core::ptr::write_volatile(rcc_apb2enr, 0x0u32 | 0x10u32);
     }
 
     loop {}

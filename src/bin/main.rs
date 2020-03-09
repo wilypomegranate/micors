@@ -48,7 +48,7 @@ fn main() -> ! {
     unsafe {
         // let gpioc_bsrr = &mut (GPIOC_BSRR) as *mut u32;
         // core::ptr::write_volatile(gpioc_bsrr, 0x2000u32);
-        (*GPIOC::ptr()).bsrr.write(|w| w.bits(0x2000u32));
+        (*GPIOC::ptr()).brr.write(|w| w.bits(0x2000u32));
     }
 
     hprintln!("Hello, world!").unwrap();

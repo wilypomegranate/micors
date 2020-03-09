@@ -20,18 +20,32 @@ static PERIPH_BASE: u32 = 0x40000000u32;
 static AHBPERIPH_BASE: u32 = PERIPH_BASE + 0x00020000u32;
 static RCC_BASE: u32 = AHBPERIPH_BASE + 0x00001000u32;
 static mut RCC_APB2ENR: u32 = RCC_BASE + 0x18u32;
+static APB2PERIPH_BASE: u32 = PERIPH_BASE + 0x00010000u32;
+static GPIOC_BASE: u32 = APB2PERIPH_BASE + 0x00001000u32;
+static mut GPIOC_CRH: u32 = GPIOC_BASE + 0x4u32;
+static mut GPIOC_BSRR: u32 = GPIOC_BASE + 0x10u32;
 
 #[entry]
 fn main() -> ! {
-    // Get access to the core peripherals from the cortex-m crate
-
-    hprintln!("Hello, world!").unwrap();
-
     // Enable clock for GPIOC.
     unsafe {
         let rcc_apb2enr = &mut (RCC_APB2ENR) as *mut u32;
         core::ptr::write_volatile(rcc_apb2enr, 0x0u32 | 0x10u32);
     }
+
+    // Setup as 10Mhz output.
+    unsafe {
+        let gpioc_crh = &mut (GPIOC_CRH) as *mut u32;
+        core::ptr::write_volatile(gpioc_crh, 0x44444444u32 | 0x100000u32);
+    }
+
+    // Set PC13 to write.
+    unsafe {
+        let gpioc_bsrr = &mut (GPIOC_BSRR) as *mut u32;
+        core::ptr::write_volatile(gpioc_bsrr, 0x2000u32);
+    }
+
+    hprintln!("Hello, world!").unwrap();
 
     loop {}
 }

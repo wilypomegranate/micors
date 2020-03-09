@@ -23,7 +23,7 @@ static mut RCC_APB2ENR: u32 = RCC_BASE + 0x18u32;
 static APB2PERIPH_BASE: u32 = PERIPH_BASE + 0x00010000u32;
 static GPIOC_BASE: u32 = APB2PERIPH_BASE + 0x00001000u32;
 static mut GPIOC_CRH: u32 = GPIOC_BASE + 0x4u32;
-static mut GPIOC_BSRR: u32 = GPIOC_BASE + 0x10u32;
+static mut GPIOC_BRR: u32 = GPIOC_BASE + 0x14u32;
 
 #[entry]
 fn main() -> ! {
@@ -41,8 +41,8 @@ fn main() -> ! {
 
     // Set PC13 to write.
     unsafe {
-        let gpioc_bsrr = &mut (GPIOC_BSRR) as *mut u32;
-        core::ptr::write_volatile(gpioc_bsrr, 0x2000u32);
+        let gpioc_brr = &mut (GPIOC_BRR) as *mut u32;
+        core::ptr::write_volatile(gpioc_brr, 0x2000u32);
     }
 
     hprintln!("Hello, world!").unwrap();
